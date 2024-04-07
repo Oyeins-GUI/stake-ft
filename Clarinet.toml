@@ -7,6 +7,21 @@ cache_dir = '.\.cache'
 
 [[project.requirements]]
 contract_id = 'SP7V1SE7EA3ZG3QTWSBA2AAG8SRHEYJ06EBBD1J2.max-token'
+[contracts.cycle-rewards]
+path = 'contracts/cycle-rewards.clar'
+clarity_version = 2
+epoch = 2.4
+
+[contracts.duck-power]
+path = 'contracts/duck-power.clar'
+clarity_version = 2
+epoch = 2.4
+
+[contracts.max-token]
+path = 'contracts/max-token.clar'
+clarity_version = 2
+epoch = 2.4
+
 [contracts.stake-ft]
 path = 'contracts/stake-ft.clar'
 clarity_version = 2
