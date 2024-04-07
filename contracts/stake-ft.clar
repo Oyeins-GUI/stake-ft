@@ -55,8 +55,14 @@
       )
       (asserts! (or (is-eq CONTRACT_OWNER tx-sender) (is-eq ADMIN tx-sender)) ERR_UNAUTHORIZED)
       (if (is-eq token "max")
-         (ok (map-set cycle-rewards { reward-cycle: (get-current-reward-cycle) } { max: (+ max amount ), duck: duck-power}))
-         (ok (map-set cycle-rewards { reward-cycle: (get-current-reward-cycle) } { max: max, duck: (+ duck-power amount) }))
+         (begin
+            (map-set cycle-rewards { reward-cycle: (get-current-reward-cycle) } { max: (+ max amount ), duck: duck-power})
+            (contract-call? .duck-power transfer amount tx-sender (as-contract CONTRACT_OWNER) none)
+         )
+         (begin
+            (map-set cycle-rewards { reward-cycle: (get-current-reward-cycle) } { max: max, duck: (+ duck-power amount) })
+            (contract-call? .duck-power transfer amount tx-sender (as-contract CONTRACT_OWNER) none)
+         )
       )
    )
 )
@@ -94,7 +100,7 @@
 (define-public (stake-token (amount uint) (delegate-to (optional principal)))
    (let
       (
-         (token-balance (contract-call? 'SP7V1SE7EA3ZG3QTWSBA2AAG8SRHEYJ06EBBD1J2.max-token get-balance tx-sender))
+         (token-balance (contract-call? .max-token get-balance tx-sender))
          (pool-status (unwrap! (map-get? is-pool-active { reward-cycle: (get-current-reward-cycle) }) stakING_POOL_INACTIVE))
          (time-opened (get time-opened pool-status))
          (total-staked (get total (default-to { total: u0 } (map-get? reward-cycle-total-staked { reward-cycle: (get-current-reward-cycle) }))))
@@ -111,7 +117,7 @@
          amount: amount, time-locked: block-height, delegated-to: delegate-to
       })
       
-      (contract-call? 'SP7V1SE7EA3ZG3QTWSBA2AAG8SRHEYJ06EBBD1J2.max-token transfer amount tx-sender (as-contract tx-sender) none)
+      (contract-call? .max-token transfer amount tx-sender (as-contract tx-sender) none)
    )
 )
 
